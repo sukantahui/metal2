@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\LoginResource;
 
 class UserController extends ApiController
 {
@@ -40,16 +41,13 @@ class UserController extends ApiController
         $user= User::where('email', $request->email)->first();
         // print_r($data);
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['success'=>0,'data'=>null, 'message'=>'Credential does not matched'], 200,[],JSON_NUMERIC_CHECK);
+//            return response()->json(['success'=>0,'data'=>null, 'message'=>'Credential does not matched'], 200,[],JSON_NUMERIC_CHECK);
+            return $this->errorResponse('Credential does not matched',403);
         }
 
         $token = $user->createToken('my-app-token')->plainTextToken;
-
-        $response = [
-            'user' => $user,
-            'token' => $token
-        ];
-        return response()->json(['success'=>1,'data'=>$response, 'message'=>'Welcome'], 200,[],JSON_NUMERIC_CHECK);
+        $user->setAttribute('token',$token);
+        return $this->successResponse(new LoginResource($user));
     }
 
 
@@ -63,7 +61,6 @@ class UserController extends ApiController
         return User::get();
     }
     function logout(Request $request){
-        $result = $request->user()->currentAccessToken()->delete();
-        return $result;
+        return $request->user()->currentAccessToken()->delete();
     }
 }
