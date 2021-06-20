@@ -45,7 +45,9 @@ class UserController extends ApiController
         $user->setAttribute('token',$token);
         return $this->successResponse(new LoginResource($user));
     }
-
+    function authenticationError(){
+        return $this->errorResponse('Credential does not matched',403);
+    }
 
     function getCurrentUser(Request $request){
 //        $user = $request->user();
