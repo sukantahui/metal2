@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,10 +14,6 @@ class UserController extends ApiController
 
     public function register(Request $request)
     {
-
-
-
-
         $user = User::create([
             'email'    => $request->email,
             'password' => $request->password,
@@ -37,10 +34,9 @@ class UserController extends ApiController
 
     function login(Request $request)
     {
-
-        $user= User::where('email', $request->email)->first();
+        $user= User::where('email', $request->loginId)->first();
         // print_r($data);
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->loginPassword, $user->password)) {
 //            return response()->json(['success'=>0,'data'=>null, 'message'=>'Credential does not matched'], 200,[],JSON_NUMERIC_CHECK);
             return $this->errorResponse('Credential does not matched',403);
         }
@@ -52,8 +48,13 @@ class UserController extends ApiController
 
 
     function getCurrentUser(Request $request){
-        return $request->user();
-//        return User::get();
+//        $user = $request->user();
+        $user=auth()->user();
+        if(!$user){
+            return $this->errorResponse("token expired",403);
+        }else{
+            return $this->successResponse(new UserResource($user));
+        }
 
     }
 
