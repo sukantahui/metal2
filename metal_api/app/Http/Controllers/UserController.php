@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -76,26 +77,23 @@ class UserController extends ApiController
         $input = $request->all();
         $userid=$request->user()->id;
 
-//        $user=auth()->user();
-//        if(!$user){
-//            return $this->errorResponse("token expired",403);
-//        }else{
-//            if (!$user || !Hash::check($request->currentLoginPassword, $user->password)) {
-//                return $this->errorResponse('Current password is wrong',403);
-//            }
-////            $user->password = bcrypt($request->newLoginPassword);
-//            $user->password = bcrypt($request->newLoginPassword);
-//            $user->save();
-//            return $this->successResponse(new UserResource($user));
-//        }
+        $rules = array(
+            'old_password' => 'required',
+            'new_password' => 'required|min:6',
+            'confirm_password' => 'required|same:new_password',
+        );
+        $validator = Validator::make($input, $rules);
+        if ($validator->fails()) {
+            $arr = array("status" => 400, "message" => $validator->errors()->first(), "data" => array());
+        }
         try {
             if ((Hash::check(request('old_password'), Auth::user()->password)) == false) {
-                $arr = array("status" => 400, "message" => "Check your old password.", "data" => array());
+                return $this->errorResponse("Check your old password.",400);
             } else if ((Hash::check(request('new_password'), Auth::user()->password)) == true) {
-                $arr = array("status" => 400, "message" => "Please enter a password which is not similar then current password.", "data" => array());
+                return $this->errorResponse("Please enter a password which is not similar then current password.",400);
             } else {
                 User::where('id', $userid)->update(['password' => Hash::make($input['new_password'])]);
-                $arr = array("status" => 200, "message" => "Password updated successfully.", "data" => array());
+                return $this->successResponse(array(),"Password updated successfully.");
             }
         } catch (\Exception $ex) {
             if (isset($ex->errorInfo[2])) {
@@ -105,6 +103,5 @@ class UserController extends ApiController
             }
             return $this->errorResponse($msg);
         }
-        return $this->successResponse($arr);
     }
 }
