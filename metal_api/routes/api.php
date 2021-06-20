@@ -45,9 +45,14 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::get('/me', function(Request $request) {
         return auth()->user();
     });
+    Route::put("user",[UserController::class,'updatePassword']);
 
+    Route::get("revokeAll",[UserController::class,'revoke_all']);
     //All secure URL's
     Route::get("user",[UserController::class,'getCurrentUser']);
+
+
+
     Route::get("logout",[UserController::class,'logout']);
 
     //get all users
@@ -119,8 +124,6 @@ Route::group(array('prefix' => 'dev'), function() {
     //saleMaster
     Route::post("saleMasters",[SaleMasterController::class,'store']);
     Route::get("saleMasters",[SaleMasterController::class,'index']);
-
-
     Route::get("transactions/{id}",[TransactionController::class, 'getTransactionByID']);
 
 });
