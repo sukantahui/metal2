@@ -39,17 +39,17 @@ class ProductController extends Controller
 
     public function saveProduct(Request $request){
         $validator = Validator::make($request->all(), [
-            'product_name' => 'required|unique:products,product_name',
+            'productName' => 'required|unique:products,product_name',
             'description' => 'required|max:25',
-            'product_category_id' => 'required|exists:product_categories,id',
-            'purchase_unit_id' => 'required',
-            'sale_unit_id' => 'required',
+            'productCategoryId' => 'required|exists:product_categories,id',
+            'purchaseUnitId' => 'required',
+            'saleUnitId' => 'required',
 //             to use between
-            'gst_rate' => 'required|integer|between:1,18',
+            'gstRate' => 'required|integer|between:1,18',
 //              for greater than value
 //            'gst_rate' => 'required|integer|gt:1',
-            'hsn_code' => 'required',
-            'opening_balance' => 'required',
+            'hsnCode' => 'required',
+            'openingBalance' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -88,14 +88,14 @@ class ProductController extends Controller
 
         try{
             $product = new Product();
-            $product->product_name = $request->input('product_name');
+            $product->product_name = $request->input('productName');
             $product->description = $request->input('description');
-            $product->product_category_id = $request->input('product_category_id');
-            $product->purchase_unit_id = $request->input('purchase_unit_id');
-            $product->sale_unit_id = $request->input('sale_unit_id');
-            $product->gst_rate = $request->input('gst_rate');
-            $product->hsn_code = $request->input('hsn_code');
-            $product->opening_balance = $request->input('opening_balance');
+            $product->product_category_id = $request->input('productCategoryId');
+            $product->purchase_unit_id = $request->input('purchaseUnitId');
+            $product->sale_unit_id = $request->input('saleUnitId');
+            $product->gst_rate = $request->input('gstRate');
+            $product->hsn_code = $request->input('hsnCode');
+            $product->opening_balance = $request->input('openingBalance');
 
             $product->save();
             $product->setAttribute('category_name', $product->category->category_name);

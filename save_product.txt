@@ -1,0 +1,13 @@
+127.0.0.1:8000/api/dev/products
+
+
+	{
+	"productName": "New Test Product",
+	"description": "Testing Purpose",
+	"productCategoryId": 1,
+	"purchaseUnitId": 1,
+	"saleUnitId": 1,
+	"gstRate": 10,
+	"hsnCode": "ABCG4567",
+	"openingBalance": 5000
+}
