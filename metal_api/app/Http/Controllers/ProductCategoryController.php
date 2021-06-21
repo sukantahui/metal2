@@ -30,14 +30,18 @@ class ProductCategoryController extends Controller
         return response()->json(['success'=>1,'data'=>$productCategories], 200,[],JSON_NUMERIC_CHECK);
     }
 
-    public function create()
+    public function usedProductCategory()
     {
-        //
+
+        $productCategories = ProductCategory::has('products')->get();
+        return response()->json(['success'=>1,'data'=>$productCategories], 200,[],JSON_NUMERIC_CHECK);
+
     }
 
-    public function store(Request $request)
+    public function notUsedProductCategory(Request $request)
     {
-        //
+        $productCategories =  ProductCategory::doesnthave('products')->get();
+        return response()->json(['success'=>1,'data'=>$productCategories], 200,[],JSON_NUMERIC_CHECK);
     }
 
     public function show(ProductCategory $productCategory)
