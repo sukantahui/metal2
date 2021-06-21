@@ -17,6 +17,9 @@ import {PopularCoursesModule} from './popular-courses/popular-courses.module';
 import {TrainerModule} from './trainer/trainer.module';
 import {_MatMenuDirectivesModule, MatMenuModule} from '@angular/material/menu';
 import {PopoverModule} from 'ngx-smart-popover';
+import {TestSectionModule} from "./test-section/test-section.module";
+import {OfferSectionModule} from "./offer-section/offer-section.module";
+import {CalloutSectionModule} from "./callout-section/callout-section.module";
 
 
 
@@ -43,7 +46,10 @@ import {PopoverModule} from 'ngx-smart-popover';
         CommonModule,
         _MatMenuDirectivesModule,
         MatMenuModule,
-        PopoverModule
+        PopoverModule,
+        TestSectionModule,
+        OfferSectionModule,
+        CalloutSectionModule
     ]
 })
 export class HomeModule { }
