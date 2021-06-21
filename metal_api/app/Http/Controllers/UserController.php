@@ -21,16 +21,10 @@ class UserController extends ApiController
             'user_name' => $request->name,
             'user_type_id' => $request->user_type_id
         ]);
-
-//        return response()->json(['success'=>1,'data'=>$user], 200,[],JSON_NUMERIC_CHECK);
-
         $token = $user->createToken('my-app-token')->plainTextToken;
+        $user->setAttribute('token',$token);
 
-        $response = [
-            'user' => $user,
-            'token' => $token
-        ];
-        return response($response, 201);
+        return $this->successResponse(new LoginResource($user),201);
     }
 
     function login(Request $request)
@@ -47,18 +41,17 @@ class UserController extends ApiController
         return $this->successResponse(new LoginResource($user));
     }
     function authenticationError(){
-        return $this->errorResponse('Credential does not matched',403);
+        return $this->errorResponse('Credential does not matched',401);
     }
 
     function getCurrentUser(Request $request){
 //        $user = $request->user();
         $user=auth()->user();
         if(!$user){
-            return $this->errorResponse("token expired",403);
+            return $this->errorResponse("token expired",401);
         }else{
             return $this->successResponse(new UserResource($user));
         }
-
     }
 
     function getAllUsers(Request $request){
@@ -78,21 +71,21 @@ class UserController extends ApiController
         $userid=$request->user()->id;
 
         $rules = array(
-            'old_password' => 'required',
-            'new_password' => 'required|min:6',
-            'confirm_password' => 'required|same:new_password',
+            'oldPassword' => 'required',
+            'newPassword' => 'required|min:6',
+            'confirm_password' => 'required|same:newPassword',
         );
         $validator = Validator::make($input, $rules);
         if ($validator->fails()) {
-            $arr = array("status" => 400, "message" => $validator->errors()->first(), "data" => array());
+            return $this->errorResponse($validator->errors()->first(),400);
         }
         try {
-            if ((Hash::check(request('old_password'), Auth::user()->password)) == false) {
+            if ((Hash::check(request('oldPassword'), Auth::user()->password)) == false) {
                 return $this->errorResponse("Check your old password.",400);
-            } else if ((Hash::check(request('new_password'), Auth::user()->password)) == true) {
+            } else if ((Hash::check(request('newPassword'), Auth::user()->password)) == true) {
                 return $this->errorResponse("Please enter a password which is not similar then current password.",400);
             } else {
-                User::where('id', $userid)->update(['password' => Hash::make($input['new_password'])]);
+                User::where('id', $userid)->update(['password' => Hash::make($input['newPassword'])]);
                 return $this->successResponse(array(),"Password updated successfully.");
             }
         } catch (\Exception $ex) {
@@ -101,7 +94,7 @@ class UserController extends ApiController
             } else {
                 $msg = $ex->getMessage();
             }
-            return $this->errorResponse($msg);
+            return $this->errorResponse($msg,400);
         }
     }
 }
