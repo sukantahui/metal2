@@ -19,7 +19,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed product_name
  * @property mixed id
  */
-class productResource extends JsonResource
+class ProductResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -30,17 +30,17 @@ class productResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'name' => $this->product_name,
+            'productId' => $this->id,
+            'productName' => $this->product_name,
             'description' => $this->description,
             'productCategoryId' =>$this->product_category_id,
-            'productCategory' => $this->category,
+            'productCategory' => new ProductCategoryResource($this->category),
             'purchaseUnitId' => $this->purchase_unit_id,
             'purchaseUnit' => new UnitResource($this->purchase_unit),
             'saleUnitId' => $this->sale_unit_id,
             'saleUnit' => new UnitResource($this->sale_unit),
-            'gst_rate' => $this->gst_rate,
-            'hsn_code' => $this->hsn_code
+            'gstRate' => $this->gst_rate,
+            'hsnCode' => $this->hsn_code
 
         ];
     }
