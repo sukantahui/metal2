@@ -211,10 +211,10 @@ class ProductController extends ApiController
         $totalSaleDetailCount = $product->sale_details->count();
         $totalIntegrityCount =  $totalIntegrityCount +  $totalPurchaseDetailCount + $totalSaleDetailCount ;
         if($totalIntegrityCount == 0){
-            return true ;
+            return response()->json(['success'=>0,'status'=>true,'message'=>'data is  deletable']);
         }
         else{
-            return  false;
+            return response()->json(['success'=>0,'status'=>false,'message'=>'data is not deletable']);
         }
     }
 
