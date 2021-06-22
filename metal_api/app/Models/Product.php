@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Product extends Model
 {
@@ -51,6 +52,12 @@ class Product extends Model
         }else{
             return true;
         }
+    }
+    public static function boot() {
+        parent::boot();
+        static::creating(function($item) {
+            Log::info('Creating event call: '.$item);
+        });
     }
 
 
