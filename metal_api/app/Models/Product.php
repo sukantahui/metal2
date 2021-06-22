@@ -41,6 +41,8 @@ class Product extends Model
     {
         return $this->hasMany('App\Models\SaleDetail','product_id');
     }
+
+    // use 'get' and 'Attribute' in the naming of function to get the calculated attribute as 'is_deletable'
     public function getIsDeletableAttribute(){
         $purchase_count = $this->purchase_details()->count();
         $sale_count = $this->sale_details()->count();

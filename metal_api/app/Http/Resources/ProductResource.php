@@ -40,7 +40,8 @@ class ProductResource extends JsonResource
             'saleUnitId' => $this->sale_unit_id,
             'saleUnit' => new UnitResource($this->sale_unit),
             'gstRate' => $this->gst_rate,
-            'hsnCode' => $this->hsn_code
+            'hsnCode' => $this->hsn_code,
+            'isDeletable'=> $this->is_deletable
 
         ];
     }
