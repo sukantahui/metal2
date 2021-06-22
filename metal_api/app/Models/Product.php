@@ -41,6 +41,15 @@ class Product extends Model
     {
         return $this->hasMany('App\Models\SaleDetail','product_id');
     }
+    public function getIsDeletableAttribute(){
+        $purchase_count = $this->purchase_details()->count();
+        $sale_count = $this->sale_details()->count();
+        if($purchase_count+$sale_count > 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
 
 
 }
