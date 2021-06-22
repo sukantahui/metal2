@@ -36,7 +36,7 @@ class ProductController extends ApiController
     }
 
     public function getProductById($id){
-        $product = Product::find($id);
+        $product = Product::findOrFail($id);
         return response()->json(['success'=>1,'data'=>new ProductResource($product)], 200,[],JSON_NUMERIC_CHECK);
 
     }
@@ -183,7 +183,11 @@ class ProductController extends ApiController
     }
 
     public function deleteProduct($id){
-        $product = Product::find($id);
+
+        $product = Product::findOrFail($id);
+        if(!$product->is_deletable){
+            return $this->errorResponse('this product is not deletable',406);
+        }
 
         if(!empty($product)){
             $result = $product->delete();
@@ -193,30 +197,30 @@ class ProductController extends ApiController
         return $this->successResponse($id,"Data deleted !");
     }
 
-    public function isDeletable($id){
-        $purchaseDetailData = PurchaseDetail::where('product_id',$id)->first();
-        $saleDetailData =  SaleDetail::where('product_id',$id)->first();
-        if($purchaseDetailData || $saleDetailData){
-
-            return response()->json(['success'=>0,'message'=>'data is not deletable']);
-        }
-        else{
-            return response()->json(['success'=>1,'message'=>'data is  deletable']);
-        }
-    }
-    public function testIsDeletable($id){
-        $totalIntegrityCount = 0;
-        $product = Product::find($id);
-        $totalPurchaseDetailCount = $product->purchase_details->count();
-        $totalSaleDetailCount = $product->sale_details->count();
-        $totalIntegrityCount =  $totalIntegrityCount +  $totalPurchaseDetailCount + $totalSaleDetailCount ;
-        if($totalIntegrityCount == 0){
-            return response()->json(['success'=>0,'status'=>true,'message'=>'data is  deletable']);
-        }
-        else{
-            return response()->json(['success'=>0,'status'=>false,'message'=>'data is not deletable']);
-        }
-    }
+//    public function isDeletable($id){
+//        $purchaseDetailData = PurchaseDetail::where('product_id',$id)->first();
+//        $saleDetailData =  SaleDetail::where('product_id',$id)->first();
+//        if($purchaseDetailData || $saleDetailData){
+//
+//            return response()->json(['success'=>0,'message'=>'data is not deletable']);
+//        }
+//        else{
+//            return response()->json(['success'=>1,'message'=>'data is  deletable']);
+//        }
+//    }
+//    public function testIsDeletable($id){
+//        $totalIntegrityCount = 0;
+//        $product = Product::find($id);
+//        $totalPurchaseDetailCount = $product->purchase_details->count();
+//        $totalSaleDetailCount = $product->sale_details->count();
+//        $totalIntegrityCount =  $totalIntegrityCount +  $totalPurchaseDetailCount + $totalSaleDetailCount ;
+//        if($totalIntegrityCount == 0){
+//            return response()->json(['success'=>0,'status'=>true,'message'=>'data is  deletable']);
+//        }
+//        else{
+//            return response()->json(['success'=>0,'status'=>false,'message'=>'data is not deletable']);
+//        }
+//    }
 
 
 
