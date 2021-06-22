@@ -29,12 +29,12 @@ class ProductController extends ApiController
                     ,DB::raw('(select unit_name from units where units.id=products.sale_unit_id) as sale_unit_name'))
                     ->join('product_categories','product_categories.id','products.product_category_id')
                     ->get();
-        return response()->json(['success'=>1,'data'=>$products], 200,[],JSON_NUMERIC_CHECK);
+        return $this->successResponse( ProductResource::collection($products) ,"All Products !");
     }
 
     public function getProductById($id){
         $product = Product::find($id);
-        return response()->json(['success'=>1,'data'=>new ProductResource($product)], 200,[],JSON_NUMERIC_CHECK);
+        return $this->successResponse(new ProductResource($product) ,"Single Product !");
 
     }
 
@@ -53,8 +53,10 @@ class ProductController extends ApiController
             'openingBalance' => ['required'],
         );
         $messages = array(
-            'purchaseUnitId.exists' => 'Unit does not exists !',
-            'purchaseUnitId.required'=> 'Please provide purchase unit !'
+            'purchaseUnitId.exists' => 'Unit does not exist !',
+            'purchaseUnitId.required'=> 'Please provide purchase unit !',
+            'saleUnitId.required'=> 'Sale Unit Id is required !',
+            'saleUnitId.exists'=> 'This Sale Unit Id Does Not Exist !',
         );
         $validator = Validator::make($request->all(),$rules,$messages);
 
