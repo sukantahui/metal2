@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\PurchaseDetail;
+use App\Models\SaleDetail;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use http\Exception;
@@ -29,7 +32,7 @@ class ProductController extends ApiController
                     ,DB::raw('(select unit_name from units where units.id=products.sale_unit_id) as sale_unit_name'))
                     ->join('product_categories','product_categories.id','products.product_category_id')
                     ->get();
-        return response()->json(['success'=>1,'data'=>$products], 200,[],JSON_NUMERIC_CHECK);
+        return $this->successResponse( ProductResource::collection($products) ,"All Products !");
     }
 
     public function getProductById($id){
@@ -54,7 +57,10 @@ class ProductController extends ApiController
         );
         $messages = array(
             'purchaseUnitId.exists' => 'Unit does not exists !',
-            'purchaseUnitId.required'=> 'Please provide purchase unit !'
+            'purchaseUnitId.required'=> 'Please provide purchase unit !',
+
+            'saleUnitId.required'=> 'Sale Unit Id is required !',
+            'saleUnitId.exists'=> 'This Sale Unit Id Does Not Exist !',
         );
         $validator = Validator::make($request->all(),$rules,$messages);
 
@@ -141,11 +147,14 @@ class ProductController extends ApiController
         );
         $messages = array(
             'purchaseUnitId.exists' => 'Unit does not exists !',
-            'purchaseUnitId.required'=> 'Please provide purchase unit !'
+            'purchaseUnitId.required'=> 'Please provide purchase unit !',
+
+            'saleUnitId.required'=> 'Sale Unit Id is required !',
+            'saleUnitId.exists'=> 'This Sale Unit Id Does Not Exist !',
         );
         $validator = Validator::make($request->all(),$rules,$messages);
        if($validator->fails()){
-           return response()->json(['success'=>0,'data'=>null,'error'=>$validator->messages()], 200,[],JSON_NUMERIC_CHECK);
+           return $this->errorResponse($validator->messages(),406);
        }
 
         try{
@@ -164,8 +173,10 @@ class ProductController extends ApiController
             $product->setAttribute('purchase_unit_name', $product->purchase_unit->unit_name);
             $product->setAttribute('sale_unit_name', $product->sale_unit->unit_name);
 
-            return response()->json(['success'=>1,'data'=>$product, 'error'=>null], 200,[],JSON_NUMERIC_CHECK);
-        }catch(Illuminate\Database\QueryException $e){
+
+            return $this->successResponse(new ProductResource($product) ,"Product Updated !");
+        }
+        catch(Illuminate\Database\QueryException $e){
             return response()->json(['success'=>0,'data'=>null, 'error'=>$e], 200,[],JSON_NUMERIC_CHECK);
         }
 
@@ -173,13 +184,40 @@ class ProductController extends ApiController
 
     public function deleteProduct($id){
         $product = Product::find($id);
+
         if(!empty($product)){
             $result = $product->delete();
         }else{
             $result = false;
         }
-        return response()->json(['success'=>$result,'id'=>$id], 200);
+        return $this->successResponse($id,"Data deleted !");
     }
+
+    public function isDeletable($id){
+        $purchaseDetailData = PurchaseDetail::where('product_id',$id)->first();
+        $saleDetailData =  SaleDetail::where('product_id',$id)->first();
+        if($purchaseDetailData || $saleDetailData){
+
+            return response()->json(['success'=>0,'message'=>'data is not deletable']);
+        }
+        else{
+            return response()->json(['success'=>1,'message'=>'data is  deletable']);
+        }
+    }
+    public function testIsDeletable($id){
+        $totalIntegrityCount = 0;
+        $product = Product::find($id);
+        $totalPurchaseDetailCount = $product->purchase_details->count();
+        $totalSaleDetailCount = $product->sale_details->count();
+        $totalIntegrityCount =  $totalIntegrityCount +  $totalPurchaseDetailCount + $totalSaleDetailCount ;
+        if($totalIntegrityCount == 0){
+            return true ;
+        }
+        else{
+            return  false;
+        }
+    }
+
 
 
 

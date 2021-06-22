@@ -33,5 +33,14 @@ class Product extends Model
     {
         return $this->belongsTo('App\Models\Unit','sale_unit_id');
     }
+    public function purchase_details()
+    {
+        return $this->hasMany('App\Models\PurchaseDetail','product_id');
+    }
+    public function sale_details()
+    {
+        return $this->hasMany('App\Models\SaleDetail','product_id');
+    }
+
 
 }

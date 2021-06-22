@@ -73,6 +73,8 @@ Route::group(array('prefix' => 'dev'), function() {
     Route::post("products",[ProductController::class,'saveProduct']);
     Route::put("products",[ProductController::class,'updateProduct']);
     Route::delete("products/{id}",[ProductController::class,'deleteProduct']);
+    Route::get("isDeletableProduct/{id}",[ProductController::class,'isDeletable']);
+    Route::get("testIsDeletable/{id}",[ProductController::class,'testIsDeletable']);
 
     Route::get("products/{id}",[ProductController::class,'getProductById']);
 
