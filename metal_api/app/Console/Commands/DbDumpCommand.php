@@ -75,8 +75,10 @@ class DbDumpCommand extends Command
 
         $this->consoleHandler()->executeCommand($command);
 
-        $this->output->success("Database `$database` dumped successfully");
-        $this->output->text("Destination: `$destination`");
-        $this->output->newLine();
+//        $this->output->success("Database `$database` dumped successfully");
+        $this->output->text($destination);
+//        $this->output->text("Destination: `$destination`");
+//        $this->output->newLine();
+
     }
 }
