@@ -31,8 +31,8 @@ use App\Http\Controllers\TransactionController;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-
+//this api will backup database and will store in storage\app folder
+Route::get("backupDatabase",[\App\Http\Controllers\AdminController::class,'backup_database']);
 
 Route::post("login",[UserController::class,'login']);
 Route::get("login",[UserController::class,'authenticationError'])->name('login');

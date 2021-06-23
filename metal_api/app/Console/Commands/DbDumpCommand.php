@@ -71,7 +71,7 @@ class DbDumpCommand extends Command
 //        $removeDbPrefix = "| sed -e 's/`$database`.`/`/g'";
 
 //        $command = "mysqldump -h $host -u$user -p$password $database $removeDefiner $removeDbPrefix > $destination";
-        $command = "mysqldump -h $host -u$user -p$password $database  > $destination";
+        $command = "mysqldump -h $host -u$user -p$password --routines -B $database  > $destination";
 
         $this->consoleHandler()->executeCommand($command);
 
