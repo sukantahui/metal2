@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class testcommand extends Command
 {
@@ -37,7 +38,7 @@ class testcommand extends Command
      */
     public function handle()
     {
-        echo "Products data added successfully"."\n";
+        LOG::info("tested");
         return 0;
     }
 }
