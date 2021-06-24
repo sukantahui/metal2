@@ -29,4 +29,14 @@ class ProductCategory extends Model
     {
         return $this->products()->count();
     }
+    public function getIsDeletableAttribute()
+    {
+        $product_count = $this->products()->count();
+
+        if($product_count > 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
 }

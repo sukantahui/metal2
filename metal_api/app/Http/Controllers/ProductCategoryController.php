@@ -51,14 +51,21 @@ class ProductCategoryController extends ApiController
 
     }
 
-    public function show(ProductCategory $productCategory)
+    public function getProductCategoryById($id)
     {
-        //
+        $productCategory = ProductCategory::findOrFail($id);
+        return response()->json(['success'=>1,'data'=>new ProductCategoryResource($productCategory)], 200,[],JSON_NUMERIC_CHECK);
+
     }
 
-    public function edit(ProductCategory $productCategory)
+    public function getProductsByCategoryId($id)
     {
-        //
+        $productCategory = ProductCategory::findOrFail($id);
+        $productCategory->setAttribute('productInfo',$productCategory->products);
+        return response()->json(['success'=>1,'data'=>$productCategory], 200,[],JSON_NUMERIC_CHECK);
+
+
+
     }
 
     public function update(Request $request, ProductCategory $productCategory)
@@ -67,8 +74,18 @@ class ProductCategoryController extends ApiController
     }
 
 
-    public function destroy(ProductCategory $productCategory)
+    public function deleteProductCategory($id)
     {
-        //
+        $productCategory = ProductCategory::findOrFail($id);
+        if(!$productCategory->is_deletable){
+            return $this->errorResponse('this category is not deletable',406);
+        }
+        if(!empty($productCategory)){
+            $result = $productCategory->delete();
+        }
+        else{
+            $result = false;
+        }
+        return $this->successResponse($id,'category deleted !!!');
     }
 }

@@ -83,6 +83,10 @@ Route::group(array('prefix' => 'dev'), function() {
     Route::get("productCategories/isDeletable/{id}",[ProductCategoryController::class,'isDeletable']);
     Route::get("productCategories/hasProducts",[ProductCategoryController::class, 'usedProductCategory']);
     Route::get("productCategories/hasNotProducts",[ProductCategoryController::class, 'notUsedProductCategory']);
+    Route::get("productCategories/{id}",[ProductCategoryController::class, 'getProductCategoryById']);
+    Route::get("productCategories/getProducts/{id}",[ProductCategoryController::class, 'getProductsByCategoryId']);
+    Route::delete("productCategories/{id}",[ProductCategoryController::class, 'deleteProductCategory']);
+
 
     //units
     Route::get("units",[UnitController::class,'getAllUnits']);
