@@ -85,7 +85,9 @@ Route::group(array('prefix' => 'dev'), function() {
     Route::get("productCategories/hasNotProducts",[ProductCategoryController::class, 'notUsedProductCategory']);
     Route::get("productCategories/{id}",[ProductCategoryController::class, 'getProductCategoryById']);
     Route::get("productCategories/getProducts/{id}",[ProductCategoryController::class, 'getProductsByCategoryId']);
+    Route::post("productCategories",[ProductCategoryController::class, 'createProductCategory']);
     Route::delete("productCategories/{id}",[ProductCategoryController::class, 'deleteProductCategory']);
+    Route::put("productCategories", [ProductCategoryController::class, 'updateProductCategory']);
 
 
     //units
