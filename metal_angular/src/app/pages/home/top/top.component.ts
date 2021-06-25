@@ -4,6 +4,7 @@ import {TopAnimation} from './top.animation';
 import {of} from 'rxjs';
 import {saveAs} from 'file-saver';
 import FileSaver from 'file-saver';
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-top',
@@ -13,14 +14,22 @@ import FileSaver from 'file-saver';
 })
 export class TopComponent implements OnInit {
   arc = 'false';
+  projectDetails: any;
+  projectHeading: any;
+  contact: any;
   private setting = {
     element: {
       dynamicDownload: null as HTMLElement
     }
   }
 
-  constructor() {
+  constructor(private http: HttpClient) {
+    this.http.get('assets/projectDetails.json').subscribe((data: any) => {
+      this.projectDetails = data;
+      this.projectHeading = this.projectDetails.projectHeading;
+      this.contact = this.projectDetails.contact;
 
+    });
   }
 
   ngOnInit(): void {

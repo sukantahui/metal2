@@ -59,6 +59,4 @@ class Product extends Model
             Log::info('Creating event call: '.$item);
         });
     }
-
-
 }
